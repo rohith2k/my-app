@@ -12,7 +12,7 @@ var output1=msgs.map((ms,index)=>{
     }
   }
   );
-  //returning user messages in the form oh ListGroup
+  //returning user messages in the form of ListGroup
   const Comp2=()=>{
       return(
           <div className="user_msgs">

@@ -5,7 +5,7 @@ var msgs=["welcome","hi","your age?"];//messages to be displayed on the system s
 
 var output=msgs.map((msg)=><div className="message"><ListGroup.Item >{msg}</ListGroup.Item></div>);
 
-//returning messages in the form oh ListGroup
+//returning messages in the form of ListGroup
 const Comp1=()=>{    
       return(
         <div className="sys_msgs">
