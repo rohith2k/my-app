@@ -3,7 +3,8 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 
-const Foot=()=>{
+//display input box and button for user input
+const Inputbox=()=>{
     return(
         <InputGroup className="mb-3">
         <FormControl
@@ -18,4 +19,4 @@ const Foot=()=>{
     );
 }
 
-export default Foot;
+export default Inputbox;
