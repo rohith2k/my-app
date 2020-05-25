@@ -1,0 +1,42 @@
+@page {
+  size: 4in 6in landscape;
+}
+.chatBox{
+  margin-left:  300px;
+  margin-right: 300px;
+  border: double;
+}
+.user_msgs{
+  display: flex;
+  text-align: right;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  
+}
+.message{
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+.message1{
+  margin-top: 200px;
+  margin-bottom: 100px;
+}
+.sys_msgs{
+  display:flex;
+  justify-content: space-between;
+  text-align: left;
+}
+.chatArea{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.foot{
+  display: flex;
+  flex-direction: row;
+}
+.header{
+  display: flex;
+  justify-content: center;
+}
