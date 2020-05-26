@@ -4,7 +4,6 @@
 .chatBox{
   margin-left:  300px;
   margin-right: 300px;
-  border: double;
 }
 .user_msgs{
   display: flex;
@@ -32,11 +31,16 @@
   flex-direction: row;
   justify-content: space-between;
 }
-.foot{
-  display: flex;
-  flex-direction: row;
-}
 .header{
   display: flex;
   justify-content: center;
+}
+.inputControl{
+  width: 20%;
+}
+.buttonControl{
+  width: 40%;
+}
+.questionControl{
+  width: 60%;
 }
