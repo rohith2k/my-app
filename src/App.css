@@ -25,6 +25,7 @@
   display:flex;
   justify-content: space-between;
   text-align: left;
+  width: max-content;
 }
 .chatArea{
   display: flex;
@@ -39,8 +40,8 @@
   width: 20%;
 }
 .buttonControl{
-  width: 40%;
+  width: max-content;
 }
 .questionControl{
-  width: 60%;
+  width: max-content;
 }
