@@ -2,8 +2,8 @@
   size: 4in 6in landscape;
 }
 .chatBox{
-  margin-left:  300px;
-  margin-right: 300px;
+  margin-left:  30%;
+  margin-right: 30%;
 }
 .user_msgs{
   display: flex;
@@ -13,10 +13,6 @@
   align-items: flex-end;
   
 }
-.message{
-  margin-top: 100px;
-  margin-bottom: 100px;
-}
 .message1{
   margin-top: 200px;
   margin-bottom: 100px;
@@ -25,12 +21,14 @@
   display:flex;
   justify-content: space-between;
   text-align: left;
-  width: max-content;
 }
 .chatArea{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  max-height: 600px;
+  overflow-y:auto;
+  overflow-x: hidden;
 }
 .header{
   display: flex;
@@ -43,5 +41,8 @@
   width: max-content;
 }
 .questionControl{
-  width: max-content;
+  width: 100%;
+}
+.buttonSelected{
+  color: red;
 }

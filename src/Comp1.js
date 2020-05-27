@@ -10,7 +10,11 @@ var msgs=questions.worflow_template;//messages to be displayed on the system sid
 //returning messages in the form of ListGroup
 const Comp1=()=>{
   const [count,setCount] = useState(1); //displays 1st question initially
-  //setDisplay(display.push(ordered_output[0]));   
+  //setDisplay(display.push(ordered_output[0]));  
+      const handleClick=(e)=>{
+        e.target.className="list-item-question list-group-item list-group-item-light list-group-item-action buttonSelected";
+        setCount(count + 1);
+      } 
       return(
         <>
         <div className="sys_msgs">
@@ -23,7 +27,7 @@ const Comp1=()=>{
             if(msg.selection_type==="Single-Select")
             {
                 inner_output =msg.options.map((option)=>{
-                return (<button type="button" class="list-item-question list-group-item list-group-item-light list-group-item-action" onClick={() => setCount(count + 1)} style={{outline:"invert"}}>{option.name}</button>);
+                return (<Button type="button" variant="outline-secondary" className="list-item-question list-group-item list-group-item-light list-group-item-action" disabled={count-index!==1} onClick={handleClick}>{option.name}</Button>);
               });
               inner_output=<div className="buttonControl">{inner_output}</div>;
             }
@@ -36,7 +40,7 @@ const Comp1=()=>{
                 aria-describedby="basic-addon2"
               />
               <InputGroup.Append>
-                <Button variant="outline-secondary" onClick={() => setCount(count + 1)}>Next</Button>
+                <Button variant="outline-secondary" className="buttonList" disabled={count-index!==1} onClick={() => setCount(count + 1)}>Next</Button>
               </InputGroup.Append>
               </InputGroup>
               </div>);
@@ -52,7 +56,7 @@ const Comp1=()=>{
                       />
                     </div>);
                 });
-              inner_output.push(<Button variant="outline-secondary" onClick={() => setCount(count + 1)}>Next</Button>);
+              inner_output.push(<Button variant="outline-secondary" className="buttonList" disabled={count-index!==1} onClick={() => setCount(count + 1)}>Next</Button>);
               inner_output=<Form>{inner_output}</Form>;
             }
             else ;
