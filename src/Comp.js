@@ -31,14 +31,13 @@ const Comp=()=>{
       } 
       const handleClick2=(e)=>{
         var ar=[];
-        var num=parseInt(e.target.value);
-        var st=num%10;
-        var end=num/10-1;
-        var kj=0;
+        var num=e.target.value;
+        var s=num.split(',');
+        var st=parseInt(s[0]);
+        var end=parseInt(s[1])-1;
         for(var i=st;i<=end;i++)
         {
           if(check_values[i][1]===1)ar.push(check_values[i][0]);
-          kj++;
         }
         setCount(count+1);
         selected.push([ar.join()]);
@@ -97,7 +96,9 @@ const Comp=()=>{
                       <label>{option.name}</label><br></br> */}
                     </div>);
                 });
-                var str2=(check_count*10+start).toString();
+                var str2=(start).toString();
+                str2+=",";
+                str2+=(check_count).toString();
                 inner_output.push(<Button variant="outline-secondary" value={str2} className="buttonList" disabled={count-index!==1} onClick={handleClick2}>Next</Button>);
                 inner_output=<Form>{inner_output}</Form>;
             }

@@ -8,7 +8,7 @@
 .user_msgs{
   align-self:flex-end;
   border-radius: 15px;
-  border: 2px solid rgb(108, 112, 101);
+  background-color:white;
   padding: 10px; 
   width: max-content;
   max-width: 60%;
@@ -26,6 +26,7 @@
 .chatArea{
   width: 100%;
   height: 600px;
+  background-color:whitesmoke;
   overflow-y:auto;
   overflow-x: hidden;
 }
@@ -45,15 +46,17 @@
 }
 .questionControl{
   border-radius: 15px;
-  border: 2px solid rgb(108, 112, 101);
   padding: 10px; 
   width:max-content;
   max-width: 60%;
+  background-color:royalblue;
+  color: white;
   border-bottom-left-radius: 0px;
 }
 .flexButton{
   text-align:center;
   margin:3px;
+  background-color:white;
 }
 .msgDisplay{
   margin-left:5px;
