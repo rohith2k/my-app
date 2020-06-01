@@ -131,16 +131,6 @@ var questions={
 "dependencies": [],
 "options": [
 {
-"id": "5e95c0ebc54f53b25b98b65d",
-"name": "No existing conditions",
-"preferred_term": "No existing conditions",
-"type": "CommonEntity.QuestionnaireOption",
-"display_image": [],
-"description": null,
-"option_type": null,
-"clear_others": true
-},
-{
 "id": "5e73671841e0346babab1f2c",
 "name": "Asthma",
 "preferred_term": "Asthma",
@@ -149,6 +139,16 @@ var questions={
 "description": null,
 "option_type": null,
 "clear_others": false
+},
+{
+"id": "5e95c0ebc54f53b25b98b65d",
+"name": "No existing conditions",
+"preferred_term": "No existing conditions",
+"type": "CommonEntity.QuestionnaireOption",
+"display_image": [],
+"description": null,
+"option_type": null,
+"clear_others": true
 },
 {
 "id": "5e95c176c54f53b25b98b662",

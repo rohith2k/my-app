@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState,useRef } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
+import lodash from 'lodash';
 import {questions} from './Data';
 import './App.css';
 
 var msgs=questions.worflow_template;//messages to be displayed on the system side
 var selected=[];
-var check_count=0;
 var question_ids=[];
 var show_ques=[];
-var check_values=[];
 var text=5;
 var first=0;
 var ques_ind;
@@ -20,82 +19,55 @@ for(var i=0;i<msgs.length;i++)
 {
   question_ids.push(msgs[i].question_id);
 }
-
-const RenderMultiSelect=(props)=>{
-  const [current,setCurrent]=useState([]);
-  // var check_start=check_count,check_end=check_count+options.length-1;
-  const handleChange=(e,i)=>{
-    if(check_values[e.target.id][1]===1)check_values[e.target.id][1]=0;
-    else check_values[e.target.id][1]=1;
-    var cur=current;
-    cur[i]=check_values[e.target.id][1]&&1;
-    if(props.options[i].clear_others&&cur[i])
-    for(let j=0;j<props.options.length;j++)
-    {
-      if(!(j===i))cur[j]=false;
-    }
-    setCurrent(cur);
- }
-  return(
-    props.options.map((option,i)=>{
-      check_values.push([option.name,0,option.id,option.clear_others]);
-      var str=(check_count).toString();
-      check_count++;                 
-            return (
-
-                <div className="mb-3">
-                  <Form.Check 
-                    type='checkbox'
-                    label={option.name}
-                    id={str}
-                    checked={current[i]}
-                    onChange={(e) => handleChange(e,i)}
-                  />
-                </div>
-                 );
-        })
-  );
-}
 //returning messages in the form of ListGroup
 const Comp=()=>{
   const [count,setCount] = useState(1); //displays 1st question initially
-  const [clear,setClear] = useState(false);
-  //setDisplay(display.push(ordered_output[0]));  
-      // const handleChange=(e)=>{
-      //    if(check_values[e.target.id][1]===1)check_values[e.target.id][1]=0;
-      //    else check_values[e.target.id][1]=1;
-      //    e.target.checked=false;
-      //    setCount(count);
-      // }
+  const [current,setCurrent]=useState([]);
+      const handleChange=(e,i,ops)=>{
+        var cur=current.slice();
+        var index=lodash.findIndex(cur,{"id":e.target.id});
+        console.log(e.target);
+        if(ops[i].clear_others&&e.target.checked)
+        {
+          var obj={"label":e.target.value,"id":e.target.id,"clear_others":ops[i].clear_others};
+          cur=[obj];
+        }
+        else if(index>-1)
+        {
+          cur.splice(index,1);
+        }
+        else
+        {
+          var obj={"label":e.target.value,"id":e.target.id,"clear_others":ops[i].clear_others};
+          cur.push(obj);
+          var removable=[];
+          for(let ind=0;ind<cur.length;ind++)if(cur[ind].clear_others)removable.push(ind);
+          for(let ind=removable.length-1;ind>=0;ind--)cur.splice(removable[ind],1);
+        }
+        console.log("afterforloop",cur);
+        setCurrent(cur);
+      }
       const handleChange2=(e)=>{
          text=e.target.value;
       }
       const handleClick=(e)=>{
-        e.target.className="list-item-question list-group-item list-group-item-light list-group-item-action buttonSelected";
-        setCount(count + 1);
-        var s=e.target.value.split(',');
-        selected.push([s[0],s[1]]);
+        //e.target.className="list-item-question list-group-item list-group-item-light list-group-item-action buttonSelected"
+        var obj={"label":e.target.value,"id":e.target.id};
+        selected.push([obj]);
+        var new_count=lodash.cloneDeep(count);
+        setCount(new_count + 1);
       } 
       const handleClick2=(e)=>{
-        var ar=[];
-        var num=e.target.value;
-        var s=num.split(',');
-        var st=parseInt(s[0]);
-        var end=parseInt(s[1])-1;
-        for(var i=st;i<=end;i++)
-        {
-          if(check_values[i][1]===1)
-          {
-            ar.push(check_values[i][0]);
-            ar.push(check_values[i][2]);
-          }
-        }
-        setCount(count+1);
-        selected.push(ar);
+        var cur=current.slice();
+        selected.push(cur);
+        setCurrent([]);
+        var new_count=lodash.cloneDeep(count);
+        setCount(new_count + 1);
       }
       const handleClick3=()=>{
         selected.push([text]);
-        setCount(count+1);
+        var new_count=lodash.cloneDeep(count);
+        setCount(new_count + 1);
       }
       return(
         <>
@@ -126,7 +98,7 @@ const Comp=()=>{
                 {
                   var arr1=dependency.options[0];
                   var hi=false;
-                  for(var l=1;l<selected[ques_ind].length;l+=2)if(selected[ques_ind][l].toString()===arr1)hi=true;
+                  for(var l=0;l<selected[ques_ind].length;l++)if(selected[ques_ind][l].id.toString()===arr1)hi=true;
                   res=res&&hi;
                 }
                 else if(dependency.condition==="range")
@@ -148,8 +120,7 @@ const Comp=()=>{
             else if(msg.selection_type==="Single-Select")
             {
                 inner_output =msg.options.map((option)=>{
-                  var return_val=option.name+","+option.id;
-                return (<div className="flexButton"><Button type="button" value={return_val} variant="outline-secondary" disabled={count-index!==1} onClick={handleClick}>{option.name}</Button></div>);
+                return (<div className="flexButton"><Button type="button" value={option.name} id={option.id} variant="outline-secondary" disabled={count-index!==1} onClick={handleClick}>{option.name}</Button></div>);
               });
               inner_output=<div className="buttonControl">{inner_output}</div>;
             }
@@ -170,29 +141,27 @@ const Comp=()=>{
             }
             else if(msg.selection_type==="Multi-Select")
             {
-                var start=check_count;
-                // inner_output =msg.options.map((option)=>{
-                //   check_values.push([option.name,0,option.id,option.clear_others]);
-                //   var str=(check_count).toString();
-                //   check_count++;                 
-                //         return (
-
-                //             <div className="mb-3">
-                //               <Form.Check 
-                //                 type='checkbox'
-                //                 label={option.name}
-                //                 id={str}
-                //                 onClick={handleChange}
-                //               />
-                //             </div>
-                //              );
-                //     });
-                    var str2=(start).toString();
-                    str2+=",";
-                    str2+=(check_count).toString();
-                    inner_output.push(<RenderMultiSelect value={str2} count={count} options={msg.options}/>);
-                inner_output.push(<Button variant="outline-secondary" value={str2} className="buttonList" disabled={count-index!==1} onClick={handleClick2}>Next</Button>);
-                inner_output=<Form>{inner_output}</Form>;
+                var arr2=msg.options;
+                inner_output =msg.options.map((option,ind2)=>{   
+                        return (
+                           
+                            <div className="flexButton">
+                              <Form.Check
+                                type='checkbox'
+                                variant="outline-secondary"
+                                id={option.id}
+                                value={option.name}
+                                checked={lodash.find(current,{"id":option.id})}
+                                label={option.name}
+                                onChange={(e) => handleChange(e,ind2,arr2)}
+                              />
+                            </div>
+                             );
+                    });
+                    inner_output=<div className="buttonControl">{inner_output}</div>;
+                    //inner_output.push(<RenderMultiSelect key={index} state1={current} changeState={setCurrent} value={str2} count={count} options={msg.options}/>);
+                    var next= <Button variant="outline-secondary" className="buttonList" disabled={count-index!==1} onClick={handleClick2}>Next</Button>
+                inner_output=<Form>{inner_output}{next}</Form>;
             }
             else ;
 
@@ -203,12 +172,13 @@ const Comp=()=>{
             if(msg.selection_type==="Number")return ([<>{heading}<br/><div className="user_msgs">{selected[index]}</div><br/></>]);
             else
             {
-              var res_arr=[];
-              res_arr=selected[index].map((vals,indi)=>{
-                if(indi%2===0)return(vals);
-                else return(",");
+              var arr=selected[index];
+              var len=arr.length;
+              var res_arr=arr.map((vals,ind)=>{
+                if(ind<len-1)return(vals.label+",");
+                else return(vals.label);
               });
-              res_arr.pop();
+              console.log("res_arr",res_arr);
               return ([<>{heading}<br/><div className="user_msgs">{res_arr}</div><br/></>]);
             }
           }
