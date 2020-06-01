@@ -10,24 +10,40 @@ import './App.css';
 var msgs=questions.worflow_template;//messages to be displayed on the system side
 var selected=[];
 var check_count=0;
+var question_ids=[];
+var show_ques=[];
 var check_values=[];
-var text="";
+var text=5;
+var first=0;
+var ques_ind;
+for(var i=0;i<msgs.length;i++)
+{
+  question_ids.push(msgs[i].question_id);
+}
 //returning messages in the form of ListGroup
 const Comp=()=>{
   const [count,setCount] = useState(1); //displays 1st question initially
+  const [clear,setClear] = useState(false);
   //setDisplay(display.push(ordered_output[0]));  
       const handleChange=(e)=>{
          if(check_values[e.target.id][1]===1)check_values[e.target.id][1]=0;
          else check_values[e.target.id][1]=1;
          setCount(count);
       }
+      const handleChange_clr=(e)=>{
+        if(check_values[e.target.id][1]===1)check_values[e.target.id][1]=0;
+        else check_values[e.target.id][1]=1;
+        setClear(false);
+        setCount(count);
+     }
       const handleChange2=(e)=>{
          text=e.target.value;
       }
       const handleClick=(e)=>{
         e.target.className="list-item-question list-group-item list-group-item-light list-group-item-action buttonSelected";
         setCount(count + 1);
-        selected.push([e.target.value]);
+        var s=e.target.value.split(',');
+        selected.push([s[0],s[1]]);
       } 
       const handleClick2=(e)=>{
         var ar=[];
@@ -37,12 +53,16 @@ const Comp=()=>{
         var end=parseInt(s[1])-1;
         for(var i=st;i<=end;i++)
         {
-          if(check_values[i][1]===1)ar.push(check_values[i][0]);
+          if(check_values[i][1]===1)
+          {
+            ar.push(check_values[i][0]);
+            ar.push(check_values[i][2]);
+          }
         }
         setCount(count+1);
-        selected.push([ar.join()]);
+        selected.push(ar);
       }
-      const handleClick3=(e)=>{
+      const handleClick3=()=>{
         selected.push([text]);
         setCount(count+1);
       }
@@ -55,10 +75,50 @@ const Comp=()=>{
           var inner_output;
           if(index===count-1)
           {
-            if(msg.selection_type==="Single-Select")
+            show_ques.push(true);
+            //question_ids.push(msg.question_id);
+            var res=true;
+            if(msg.dependencies.length>0)
+            {
+              for(var i=0;i<msg.dependencies.length;i++){
+                var dependency=msg.dependencies[i];
+                for(var j=0;j<question_ids.length;j++)
+                {
+                  var s1=(question_ids[j]).toString();
+                  if(s1===dependency.question)
+                  {
+                    ques_ind=j;
+                    break;
+                  }
+                }
+                if(dependency.condition==="present")
+                {
+                  var arr1=dependency.options[0];
+                  var hi=false;
+                  for(var l=1;l<selected[ques_ind].length;l+=2)if(selected[ques_ind][l].toString()===arr1)hi=true;
+                  res=res&&hi;
+                }
+                else if(dependency.condition==="range")
+                {
+                  var low=dependency.range.min;
+                  var high=dependency.range.max;
+                  var age=selected[ques_ind];
+                  res=res&&(age<=high&&age>=low);
+                }
+                else;
+              }
+            }
+            if(res===false)
+            {
+              show_ques[index]=false;
+              if(first++===0)selected.push([]);
+              setCount(count+1);
+            }
+            else if(msg.selection_type==="Single-Select")
             {
                 inner_output =msg.options.map((option)=>{
-                return (<div className="flexButton"><Button type="button" value={option.name} variant="outline-secondary" disabled={count-index!==1} onClick={handleClick}>{option.name}</Button></div>);
+                  var return_val=option.name+","+option.id;
+                return (<div className="flexButton"><Button type="button" value={return_val} variant="outline-secondary" disabled={count-index!==1} onClick={handleClick}>{option.name}</Button></div>);
               });
               inner_output=<div className="buttonControl">{inner_output}</div>;
             }
@@ -81,21 +141,39 @@ const Comp=()=>{
             {
                 var start=check_count;
                 inner_output =msg.options.map((option)=>{
-                  check_values.push([option.name,0]);
+                  check_values.push([option.name,0,option.id]);
                   var str=(check_count).toString();
                   check_count++;
-                return (
-                    <div className="mb-3">
-                      <Form.Check 
-                        type='checkbox'
-                        label={option.name}
-                        id={str}
-                        onClick={handleChange}
-                      />
-                      {/* <input type="checkbox" id={str} onChange={handleChange} />
-                      <label>{option.name}</label><br></br> */}
-                    </div>);
-                });
+                  if(option.clear_others===true)
+                  {
+                    return (
+                      <div className="mb-3">
+                        <Form.Check 
+                          type='checkbox'
+                          label={option.name}
+                          id={str}
+                          onChange={handleChange_clr}
+                        />
+                        {/* <input type="checkbox" id={str} onChange={handleChange} />
+                        <label>{option.name}</label><br></br> */}
+                      </div>);
+                 
+                  }
+                  else{
+                        return (
+                            <div className="mb-3">
+                              <Form.Check 
+                                type='checkbox'
+                                label={option.name}
+                                id={str}
+                                defaultChecked={clear}
+                                onClick={handleChange}
+                              />
+                              {/* <input type="checkbox" id={str} onChange={handleChange} />
+                              <label>{option.name}</label><br></br> */}
+                            </div>);
+                      }
+                    });
                 var str2=(start).toString();
                 str2+=",";
                 str2+=(check_count).toString();
@@ -106,9 +184,19 @@ const Comp=()=>{
 
             return ([<>{heading}<br/><div className="msgDisplay">{inner_output}</div><br/></>]);
           }
-          else if(index<count)
+          else if(index<count&&show_ques[index])
           {
-            return ([<>{heading}<br/><div className="user_msgs">{selected[index]}</div><br/></>]);
+            if(msg.selection_type==="Number")return ([<>{heading}<br/><div className="user_msgs">{selected[index]}</div><br/></>]);
+            else
+            {
+              var res_arr=[];
+              res_arr=selected[index].map((vals,indi)=>{
+                if(indi%2===0)return(vals);
+                else return(",");
+              });
+              res_arr.pop();
+              return ([<>{heading}<br/><div className="user_msgs">{res_arr}</div><br/></>]);
+            }
           }
           else;
         }
