@@ -12,8 +12,8 @@ var msgs=questions.worflow_template;//messages to be displayed on the system sid
 var selected=[];
 var question_ids=[];
 var show_ques=[];
-var text=5;
 var first=0;
+var text="";
 var ques_ind;
 for(var i=0;i<msgs.length;i++)
 {
@@ -59,15 +59,29 @@ const Comp=()=>{
       } 
       const handleClick2=(e)=>{
         var cur=current.slice();
-        selected.push(cur);
-        setCurrent([]);
-        var new_count=lodash.cloneDeep(count);
-        setCount(new_count + 1);
+        if(cur.length===0)
+        {
+          alert("no option selected");
+        }
+        else
+        {
+          selected.push(cur);
+          setCurrent([]);
+          var new_count=lodash.cloneDeep(count);
+          setCount(new_count + 1);
+        }
       }
       const handleClick3=()=>{
-        selected.push([text]);
-        var new_count=lodash.cloneDeep(count);
-        setCount(new_count + 1);
+        if(isNaN(text))
+        {
+          alert("please enter a valid number");
+        }
+        else
+        {
+          selected.push([text]);
+          var new_count=lodash.cloneDeep(count);
+          setCount(new_count + 1);
+        }
       }
       return(
         <>
