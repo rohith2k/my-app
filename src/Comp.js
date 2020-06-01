@@ -20,22 +20,53 @@ for(var i=0;i<msgs.length;i++)
 {
   question_ids.push(msgs[i].question_id);
 }
+
+const RenderMultiSelect=(props)=>{
+  const [current,setCurrent]=useState([]);
+  // var check_start=check_count,check_end=check_count+options.length-1;
+  const handleChange=(e,i)=>{
+    if(check_values[e.target.id][1]===1)check_values[e.target.id][1]=0;
+    else check_values[e.target.id][1]=1;
+    var cur=current;
+    cur[i]=check_values[e.target.id][1]&&1;
+    if(props.options[i].clear_others&&cur[i])
+    for(let j=0;j<props.options.length;j++)
+    {
+      if(!(j===i))cur[j]=false;
+    }
+    setCurrent(cur);
+ }
+  return(
+    props.options.map((option,i)=>{
+      check_values.push([option.name,0,option.id,option.clear_others]);
+      var str=(check_count).toString();
+      check_count++;                 
+            return (
+
+                <div className="mb-3">
+                  <Form.Check 
+                    type='checkbox'
+                    label={option.name}
+                    id={str}
+                    checked={current[i]}
+                    onChange={(e) => handleChange(e,i)}
+                  />
+                </div>
+                 );
+        })
+  );
+}
 //returning messages in the form of ListGroup
 const Comp=()=>{
   const [count,setCount] = useState(1); //displays 1st question initially
   const [clear,setClear] = useState(false);
   //setDisplay(display.push(ordered_output[0]));  
-      const handleChange=(e)=>{
-         if(check_values[e.target.id][1]===1)check_values[e.target.id][1]=0;
-         else check_values[e.target.id][1]=1;
-         setCount(count);
-      }
-      const handleChange_clr=(e)=>{
-        if(check_values[e.target.id][1]===1)check_values[e.target.id][1]=0;
-        else check_values[e.target.id][1]=1;
-        setClear(false);
-        setCount(count);
-     }
+      // const handleChange=(e)=>{
+      //    if(check_values[e.target.id][1]===1)check_values[e.target.id][1]=0;
+      //    else check_values[e.target.id][1]=1;
+      //    e.target.checked=false;
+      //    setCount(count);
+      // }
       const handleChange2=(e)=>{
          text=e.target.value;
       }
@@ -72,7 +103,7 @@ const Comp=()=>{
         <ListGroup >{
         msgs.slice(0,count).map((msg,index)=>{
           var heading = <div class="questionControl">{msg.question_text}</div>;
-          var inner_output;
+          var inner_output=[];
           if(index===count-1)
           {
             show_ques.push(true);
@@ -140,43 +171,26 @@ const Comp=()=>{
             else if(msg.selection_type==="Multi-Select")
             {
                 var start=check_count;
-                inner_output =msg.options.map((option)=>{
-                  check_values.push([option.name,0,option.id]);
-                  var str=(check_count).toString();
-                  check_count++;
-                  if(option.clear_others===true)
-                  {
-                    return (
-                      <div className="mb-3">
-                        <Form.Check 
-                          type='checkbox'
-                          label={option.name}
-                          id={str}
-                          onChange={handleChange_clr}
-                        />
-                        {/* <input type="checkbox" id={str} onChange={handleChange} />
-                        <label>{option.name}</label><br></br> */}
-                      </div>);
-                 
-                  }
-                  else{
-                        return (
-                            <div className="mb-3">
-                              <Form.Check 
-                                type='checkbox'
-                                label={option.name}
-                                id={str}
-                                defaultChecked={clear}
-                                onClick={handleChange}
-                              />
-                              {/* <input type="checkbox" id={str} onChange={handleChange} />
-                              <label>{option.name}</label><br></br> */}
-                            </div>);
-                      }
-                    });
-                var str2=(start).toString();
-                str2+=",";
-                str2+=(check_count).toString();
+                // inner_output =msg.options.map((option)=>{
+                //   check_values.push([option.name,0,option.id,option.clear_others]);
+                //   var str=(check_count).toString();
+                //   check_count++;                 
+                //         return (
+
+                //             <div className="mb-3">
+                //               <Form.Check 
+                //                 type='checkbox'
+                //                 label={option.name}
+                //                 id={str}
+                //                 onClick={handleChange}
+                //               />
+                //             </div>
+                //              );
+                //     });
+                    var str2=(start).toString();
+                    str2+=",";
+                    str2+=(check_count).toString();
+                    inner_output.push(<RenderMultiSelect value={str2} count={count} options={msg.options}/>);
                 inner_output.push(<Button variant="outline-secondary" value={str2} className="buttonList" disabled={count-index!==1} onClick={handleClick2}>Next</Button>);
                 inner_output=<Form>{inner_output}</Form>;
             }
