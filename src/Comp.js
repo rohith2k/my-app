@@ -18,7 +18,7 @@ for(var i=0;i<msgs.length;i++)
 //returning messages in the form of ListGroup
 const Comp=()=>{
   const [count,setCount] = useState(1); 
-  const [current,setCurrent]=useState([]);
+  const [current,setCurrent]=useState([""]);
   const [err,setErr]=useState();
   const message = React.createRef();
 
