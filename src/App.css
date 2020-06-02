@@ -34,8 +34,17 @@
   display: flex;
   justify-content: center;
 }
+.errorControl{
+  line-height: 5px;
+}
+.errorDisplay{
+  font-size: 20px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 5px;
+}
 .inputControl{
-  width: 20%;
+  width: 40%;
 }
 .buttonControl{
   display: flex;
@@ -49,9 +58,23 @@
   padding: 10px; 
   width:max-content;
   max-width: 60%;
+  margin-top: 20px;
   background-color:royalblue;
   color: white;
   border-bottom-left-radius: 0px;
+}
+.check-box{
+  padding: 5px;
+  border-color: royalblue;
+}
+.flexbutton2{
+  text-align:center;
+  margin:3px;
+  border-style: solid;
+  border-radius: 10px;
+  border-color:grey;
+  border-width: 1px;
+  background-color:white;
 }
 .flexButton{
   text-align:center;
